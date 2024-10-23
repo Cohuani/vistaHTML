@@ -1,0 +1,29 @@
+select sum(mCanCos) montoTotalVendido 
+from (
+select ta.idArticulo, (tv.cantidad * ta.Costo) mCanCos 
+from venta tv 
+join articulo ta on tv.idArticulo = ta.idArticulo) t1;
+
+
+
+select nombre
+from(
+select t1.nombre, (t1.cantidad * ta.Costo) preT
+from (
+select concat(tu.nombre, ' ', tu.apellido) nombre, tv.idArticulo, tv.cantidad 
+from venta tv 
+join usuario tu on tv.usuarioVenta = tu.idusuario
+ where month (tv.fechaVenta) = 09 and year (tv.fechaVenta) = 2024) t1 
+ join articulo ta on t1.idArticulo = ta.idArticulo) t2 
+ group by nombre order by sum(preT) desc
+ limit 1;
+
+
+
+select ta.Descripcion, tuv.Descripcion, sum(tv.cantidad) unidades
+from venta tv 
+join articulo ta on tv.idArticulo = ta.idArticulo
+left join unidadventa tuv on tuv.idUnidadVenta =  ta.unidadVenta
+where month (tv.fechaVenta) = 09 and year (tv.fechaVenta) = 2024
+group by ta.Descripcion, tuv.Descripcion order by unidades desc
+limit 1;
